@@ -16,8 +16,8 @@ const LeagueButton = ({ league, selected, onClick }: LeagueButtonProps) => (
     onClick={onClick}
     className={`flex items-center gap-3 border rounded-full px-4 py-2 text-sm whitespace-nowrap min-w-fit ${
       selected
-        ? "bg-primary text-white border-primary"
-        : "bg-accent border-accent/50 text-gray-800 hover:bg-accent/80"
+        ? "bg-[#FACD6A] text-white border-[#FACD6A]"
+        : "bg-gray-300 border-accent/80 text-gray-800 hover:bg-accent/80"
     }`}
   >
     <img
@@ -32,14 +32,24 @@ const LeagueButton = ({ league, selected, onClick }: LeagueButtonProps) => (
 export const TopEvents = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
-
-  // State for matches and leagues.
   const [matches, setMatches] = useState<Match[]>([]);
   const [footballLeagues, setFootballLeagues] = useState<FootballLeague[]>([]);
-  // Store the currently selected league (null = "All")
   const [selectedLeague, setSelectedLeague] = useState<string | null>(null);
-  // Toggle for displaying additional leagues.
   const [showMore, setShowMore] = useState(false);
+  const [selectedBets, setSelectedBets] = useState<
+    { type: string; option: string }[]
+  >([]);
+
+  const handleSelectBet = (type: string, option: string) => {
+    const existingBetIndex = selectedBets.findIndex((bet) => bet.type === type);
+    if (existingBetIndex !== -1) {
+      const newBets = [...selectedBets];
+      newBets[existingBetIndex] = { type, option };
+      setSelectedBets(newBets);
+    } else {
+      setSelectedBets([...selectedBets, { type, option }]);
+    }
+  };
 
   // Load leagues from local data on mount.
   useEffect(() => {
@@ -101,10 +111,10 @@ export const TopEvents = () => {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 pb-32 mt-5">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-white">
+        <h2 className="text-xl font-bold text-gray-900">
           {t("events.topEvents")}
         </h2>
-        <button className="text-primary font-semibold">
+        <button className="text-gray-500 font-semibold">
           {t("events.seeAll")}
         </button>
       </div>
@@ -117,8 +127,8 @@ export const TopEvents = () => {
             onClick={() => setSelectedLeague(null)}
             className={`flex items-center px-6 py-3 border rounded-full text-sm whitespace-nowrap min-w-fit ${
               selectedLeague === null
-                ? "bg-primary text-white border-primary"
-                : "bg-accent/80 border-accent/50 text-gray-200 hover:bg-accent"
+                ? "bg-[#FACD6A] text-gray-900 border-[#FACD6A]"
+                : "bg-gray-300 border-[#FACD6A]/50 text-gray-900 hover:bg-[#FACD6A]"
             }`}
           >
             <span>{t("All")}</span>
@@ -158,29 +168,17 @@ export const TopEvents = () => {
       </div>
 
       {/* Fixture list */}
+
       <div className="space-y-6">
         {matches.map((match) => (
           <div
             key={match.id}
-            className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 cursor-pointer hover:bg-gray-800/70 transition-colors"
+            className="bg-white backdrop-blur-sm rounded-2xl p-3 cursor-pointer hover:bg-[#FACD6A]/70 transition-colors shadow-2xl"
             onClick={() => navigate(`/match/${match.id}`)}
           >
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <img
-                  src={
-                    fetchedFootballLeagues.find((l) => l.name === match.league)
-                      ?.logo
-                  }
-                  alt={match.league}
-                  className="w-6 h-6 object-contain"
-                />
-                {selectedLeague && (
-                  <span className="text-sm text-gray-400">{match.league}</span>
-                )}
-              </div>
+            <div className="flex justify-center items-center ">
               <span
-                className={`text-xs text-white px-3 py-1.5 rounded-full ${getStatusBg(
+                className={`text-xs text-gray-900  px-3 py-1.5 rounded-full ${getStatusBg(
                   match.status
                 )}`}
               >
@@ -189,31 +187,59 @@ export const TopEvents = () => {
             </div>
 
             <div className="flex justify-between items-center mb-6">
-              <div className="flex-1 flex flex-col items-center gap-2">
+              <div className="flex-1 flex flex-col items-center ">
                 <img
                   src={match.homeTeamImage}
                   alt={match.homeTeam}
-                  className="w-12 h-12 object-contain"
+                  className="w-7 h-7 object-contain"
                 />
-                <p className="font-semibold text-white text-center">
+                <p className="font-semibold text-sm text-gray-900 text-center">
                   {match.homeTeam}
                 </p>
               </div>
+
               <div className="flex items-center gap-3 mx-6">
-                <span className="font-bold text-2xl text-white">
+                <span className="font-bold text-2xl text-gray-900">
                   {match.homeScore} : {match.awayScore}
                 </span>
               </div>
+
               <div className="flex-1 flex flex-col items-center gap-2">
                 <img
                   src={match.awayTeamImage}
                   alt={match.awayTeam}
-                  className="w-12 h-12 object-contain"
+                  className="w-7 h-7 object-contain"
                 />
-                <p className="font-semibold text-white text-center">
+                <p className="font-semibold text-gray-900 text-center text-sm">
                   {match.awayTeam}
                 </p>
               </div>
+            </div>
+
+            <div className="flex justify-between gap-2 mt-4">
+              <button
+                className="flex-1 py-2 text-sm font-medium bg-[#ECE8E5]  rounded-2xl hover:bg-gray-700 flex gap-5 item-center justify-center w-fit"
+                onClick={() => handleSelectBet("Double Chance", "1X")}
+              >
+                <span className="text-gray-500">1X</span>
+                <span className="font-medium">{match.odds.home}</span>
+              </button>
+
+              <button
+                className="flex-1 py-2 text-sm font-medium bg-[#ECE8E5]  rounded-2xl hover:bg-gray-700 flex gap-5 item-center justify-center w-fit"
+                onClick={() => handleSelectBet("Double Chance", "X")}
+              >
+                <span className="text-gray-500 ">X</span>{" "}
+                <span className="font-medium">{match.odds.draw}</span>
+              </button>
+
+              <button
+                className="flex-1 py-2 text-sm  bg-[#ECE8E5]  rounded-2xl hover:bg-gray-700 flex gap-5 item-center justify-center w-fit"
+                onClick={() => handleSelectBet("Double Chance", "2X")}
+              >
+                <span className="text-gray-500 ">2X</span>{" "}
+                <span className="font-medium">{match.odds.away}</span>
+              </button>
             </div>
           </div>
         ))}

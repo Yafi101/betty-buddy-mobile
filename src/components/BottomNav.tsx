@@ -15,17 +15,19 @@ export const BottomNav = () => {
   ];
 
   return (
-    <div className="bg-gray-800/80 backdrop-blur-lg border border-gray-700 rounded-2xl flex justify-around items-center h-16 shadow-lg">
+    <div className="bg-white backdrop-blur-lg border border-gray-700 rounded-2xl flex justify-around items-center p-2 shadow-lg">
       {tabs.map((tab) => (
         <button
           key={tab.label}
-          className={`flex flex-col items-center px-4 ${
-            location.pathname === tab.path ? "text-primary" : "text-gray-400"
+          className={`flex flex-col items-center justify-center px-4 ${
+            location.pathname === tab.path
+              ? "text-gray-900 bg-[#FACD6A] p-2 rounded-full h-full"
+              : "text-gray-400"
           }`}
           onClick={() => navigate(tab.path)}
         >
-          <tab.icon className="w-6 h-6" />
-          <span className="text-xs mt-1">{tab.label}</span>
+          <tab.icon className="w-4 h-4" />
+          {/* <span className="text-xs mt-1">{tab.label}</span> */}
         </button>
       ))}
     </div>

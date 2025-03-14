@@ -31,26 +31,11 @@ export const Navbar = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (chatId) {
-        try {
-          const user = await getUser(chatId);
-          console.log("Fetched User:", user);
-        } catch (error) {
-          console.error("Error fetching user:", error);
-        }
-      }
-    };
-
-    fetchUser();
-  }, []);
-
   return (
-    <div className="px-4 py-3 flex justify-between items-center bg-background">
+    <div className="px-4 py-3 flex justify-between items-center bg-white">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-          <User className="w-5 h-5 text-secondary" />
+        <div className="w-8 h-8 rounded-full bg-[#FACD6A] flex items-center justify-center">
+          <User className="w-5 h-5 text-black" />
         </div>
         <div className="flex flex-col">
           <span className="text-sm text-gray-500">{t("nav.greeting")}</span>

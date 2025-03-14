@@ -1,4 +1,3 @@
-
 import { ArrowDown, ArrowUp } from "lucide-react";
 
 const transactions = [
@@ -42,14 +41,14 @@ export const TransactionHistory = () => {
       {transactions.map((transaction) => (
         <div
           key={transaction.id}
-          className="flex items-center justify-between p-4 rounded-lg bg-gray-700/30 border border-gray-700"
+          className="flex items-center justify-between p-4 rounded-lg bg-[#FACD6A] shadow-lg"
         >
           <div className="flex items-center gap-4">
             <div
               className={`p-2 rounded-full ${
                 transaction.type === "deposit"
-                  ? "bg-green-500/20 text-green-500"
-                  : "bg-red-500/20 text-red-500"
+                  ? "bg-green-200 text-green-500"
+                  : "bg-red-200 text-red-500"
               }`}
             >
               {transaction.type === "deposit" ? (
@@ -59,16 +58,16 @@ export const TransactionHistory = () => {
               )}
             </div>
             <div>
-              <p className="font-medium text-white">{transaction.description}</p>
-              <p className="text-sm text-gray-400">{transaction.date}</p>
+              <p className="font-medium">{transaction.description}</p>
+              <p className="text-sm text-gray-500">{transaction.date}</p>
             </div>
           </div>
           <div className="text-right">
             <p
               className={`font-semibold ${
                 transaction.type === "deposit"
-                  ? "text-green-400"
-                  : "text-red-400"
+                  ? "text-green-600"
+                  : "text-red-600"
               }`}
             >
               {transaction.type === "deposit" ? "+" : "-"}${transaction.amount}
@@ -76,8 +75,8 @@ export const TransactionHistory = () => {
             <p
               className={`text-sm ${
                 transaction.status === "completed"
-                  ? "text-gray-400"
-                  : "text-yellow-400"
+                  ? "text-gray-600"
+                  : "text-yellow-600"
               }`}
             >
               {transaction.status}

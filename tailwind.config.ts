@@ -23,7 +23,7 @@ export default {
         primary: "#D946EF", // Bright pink
         "primary-dark": "#C026D3",
         secondary: "#FFDEE2", // Soft pink
-        accent: "#FCE7F3",
+        accent: "#FACD6A",
         background: "#FFFFFF",
         surface: "#FDF2F8",
         // Keep existing shadcn colors...
