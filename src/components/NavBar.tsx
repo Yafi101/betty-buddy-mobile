@@ -1,51 +1,75 @@
+import { Bell, User } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useEffect, useState } from "react";
+import { getUser } from "@/services/userServices";
 
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, History, User, Trophy } from 'lucide-react';
-import { cn } from '@/lib/utils';
+export const Navbar = () => {
+  const { t, language, setLanguage } = useLanguage();
+  const [chatId, setChatId] = useState("");
+  const [firstName, setFirstName] = useState("");
 
-const NavBar: React.FC = () => {
-  const location = useLocation();
-  
-  const navItems = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/placebet', label: 'Bet', icon: Trophy },
-    { path: '/history', label: 'History', icon: History },
-    { path: '/account', label: 'Account', icon: User },
-  ];
+  useEffect(() => {
+    // Check if the Telegram object and its WebApp property exist
+    if (window.Telegram && window.Telegram.WebApp) {
+      const { initDataUnsafe } = window.Telegram.WebApp;
+      if (initDataUnsafe && Object.keys(initDataUnsafe).length !== 0) {
+        const { user } = initDataUnsafe;
+        if (user) {
+          const { id, first_name, last_name, username, language_code } = user;
+          console.log(id);
+          console.log(first_name, last_name);
+          setFirstName(first_name);
+          setChatId(id);
+          // setChatId(id);
+          // setLoadedFromTelegram(true);
+        }
+      }
+    } else {
+      console.warn(
+        "Telegram WebApp is not available. Make sure you're running inside Telegram."
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (chatId) {
+        try {
+          const user = await getUser(chatId);
+          console.log("Fetched User:", user);
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 glass rounded-t-xl animate-slide-in-bottom">
-      <div className="flex justify-around py-3 px-2">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Link 
-              to={item.path} 
-              key={item.path}
-              className={cn(
-                "flex flex-col items-center px-4 py-2 rounded-lg transition-all duration-300",
-                isActive 
-                  ? "text-primary" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <item.icon size={20} className={cn(
-                "mb-1 transition-transform",
-                isActive && "scale-110"
-              )} />
-              <span className={cn(
-                "text-xs font-medium",
-                isActive && "font-semibold"
-              )}>
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+    <div className="px-4 py-3 flex justify-between items-center bg-background">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <User className="w-5 h-5 text-secondary" />
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-500">{t("nav.greeting")}</span>
+          <span className="font-semibold">{firstName}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value as "en" | "am")}
+          className="bg-transparent text-sm"
+        >
+          <option value="en">English</option>
+          <option value="am">አማርኛ</option>
+        </select>
+        <button className="p-2">
+          <Bell className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );
 };
-
-export default NavBar;
